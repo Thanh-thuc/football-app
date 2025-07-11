@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý lịch thi đấu</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>🗓️ Quản lý lịch thi đấu</h1>
+
+    <!-- Danh sách các ngày đã tạo -->
+    <h3>📅 Danh sách các ngày thi đấu</h3>
+    <ul>
+      {% for match in matches %}
+        <li>
+          <strong>{{ match.date }}</strong> – {{ match.field }} ({{ match.time }})
+          <a href="{{ url_for('view_match', match_id=match.id) }}">🔍 Xem</a>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <hr>
+
+    <!-- Thêm mới một ngày -->
+    <h3>➕ Tạo trang đăng ký mới</h3>
+    <form method="POST">
+      <label>Ngày thi đấu:</label>
+      <input type="date" name="date" required><br>
+
+      <label>Giờ thi đấu:</label>
+      <input type="time" name="time" required><br>
+
+      <label>Tên sân:</label>
+      <input type="text" name="field" required><br>
+
+      <label>Link vị trí sân:</label>
+      <input type="url" name="map_link"><br>
+
+      <button type="submit">✅ Tạo mới</button>
+    </form>
+
+    <p><a href="{{ url_for('home') }}">⬅ Quay lại trang chủ</a></p>
+  </div>
+</body>
+</html>

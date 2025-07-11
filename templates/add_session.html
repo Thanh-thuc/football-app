@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thêm buổi đá bóng mới</title>
+</head>
+<body>
+  <h2>➕ Thêm buổi đá bóng mới</h2>
+  <form method="POST">
+    <label>Ngày đá (dd-mm-yyyy):</label><br>
+    <input type="text" name="date" required><br><br>
+
+    <label>Giờ đá:</label><br>
+    <input type="text" name="time" required><br><br>
+
+    <label>Địa điểm:</label><br>
+    <input type="text" name="location" required><br><br>
+
+    <label>Link bản đồ:</label><br>
+    <input type="url" name="map_link" placeholder="https://maps.google.com" required><br><br>
+
+    <button type="submit">Tạo buổi đá</button>
+    <a href="/">🔙 Về trang chính</a>
+  </form>
+</body>
+</html>

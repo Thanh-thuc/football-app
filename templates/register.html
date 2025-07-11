@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng ký buổi đá</title>
+  <style>
+    .logo-top-right { position: absolute; top: 10px; right: 10px; }
+    .logo-img { max-width: 100px; height: auto; }
+    .locked { background-color: #f0f0f0; color: #888; }
+    .late { background-color: #fff3e0 !important; }
+    #deadline-box { background-color: #ffcc80; padding: 8px; margin: 10px 0; border-radius: 6px; font-weight: bold; text-align: center; color: #333; }
+    .content-wrapper { 
+      max-width: 800px; 
+      margin: 0 auto; 
+      width: 90%; 
+    }
+    .register-table { 
+      width: 100%; 
+      border-collapse: collapse; 
+    }
+    .register-table th, .register-table td { 
+      border: 1px solid #ddd; 
+      padding: 6px; 
+      text-align: center; 
+      font-size: 12px; 
+    }
+    .register-table th { 
+      background-color: #4CAF50; /* Màu xanh lá cho tiêu đề */
+      color: white; 
+    }
+    .register-table tr:nth-child(even) { background-color: #f9f9f9; }
+    .register-table tr:nth-child(odd) { background-color: #ffffff; }
+    select, input { padding: 4px; font-size: 12px; width: 100%; box-sizing: border-box; }
+    button { 
+      background-color: #2196f3; 
+      color: white; 
+      padding: 6px 12px; 
+      border: none; 
+      border-radius: 4px; 
+      cursor: pointer; 
+    }
+    button:hover { opacity: 0.9; }
+    .position-box { 
+      display: inline-block; 
+      margin: 2px; 
+      padding: 2px 6px; 
+      border-radius: 3px; 
+      color: white; 
+    }
+    .position-box.COACH { background-color: #2196F3; } /* Xanh lam */
+    .position-box.CLUB-OWNER { background-color: #9C27B0; } /* Tím - Thay đổi cách đặt tên lớp */
+    .position-box.GK { background-color: #3F51B5; } /* Xanh dương */
+    .position-box.RB, .position-box.CB, .position-box.LB { background-color: #4CAF50; } /* Xanh lá */
+    .position-box.LM, .position-box.RM, .position-box.DM, .position-box.AM { background-color: #FFC107; } /* Vàng */
+    .position-box.ST, .position-box.CF, .position-box.SS, .position-box.LW, .position-box.RW { background-color: #F44336; } /* Đỏ */
+    #toggle-coach { margin: 5px 0; }
+    a { margin-top: 10px; display: inline-block; font-size: 12px; }
+    .container { position: relative; padding-top: 40px; }
+
+    /* Responsive design cho mobile */
+    @media (max-width: 768px) {
+      .container { padding-top: 30px; }
+      .logo-top-right { top: 5px; right: 5px; }
+      .logo-img { max-width: 60px; }
+      h1 { font-size: 14px; margin: 5px 0; }
+      p { font-size: 10px; margin: 5px 0; }
+      #deadline-box { padding: 5px; margin: 5px 0; font-size: 10px; }
+      .content-wrapper { width: 100%; }
+      .register-table { display: block; overflow-x: auto; }
+      .register-table th, .register-table td { font-size: 10px; padding: 4px; }
+      select, input { font-size: 10px; padding: 2px; }
+      button { font-size: 10px; padding: 4px 8px; }
+      .position-box { font-size: 10px; margin: 1px; padding: 1px 4px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="logo-top-right">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-img">
+  </div>
+  <div class="container">
+    <div class="content-wrapper">
+      <h1 style="font-size: 18px; margin: 5px 0;">Đăng ký buổi đá ngày {{ schedule.date }} – {{ schedule.time }}</h1>
+      <p style="font-size: 12px; margin: 5px 0;">🏟️ {{ schedule.field }} – <a href="{{ schedule.map }}" target="_blank">Xem bản đồ</a></p>
+
+      <div style="text-align: center; margin: 5px 0;">
+        <button id="toggle-coach" onclick="window.location.href='{{ url_for('coach_mode', date=schedule.id) }}'">
+          🧠 Xem sơ đồ chiến thuật (Coach Mode)
+        </button>
+      </div>
+
+      <div id="deadline-box">
+        <div id="countdown">⏳ Đang tải thời gian...</div>
+        <div id="deadline-info">Hạn chót đăng ký: {{ locked_datetime_str }}</div>
+      </div>
+
+      {% if is_locked %}
+        <p style="color: red; font-weight: bold; margin: 5px 0; font-size: 12px;">🔒 Buổi đăng ký này đã kết thúc. Chỉ admin mới có thể chỉnh sửa.</p>
+      {% endif %}
+
+      <form method="POST" id="register-form">
+        <table class="register-table">
+          <thead>
+            <tr>
+              <th>STT</th>
+              <th>Tên</th>
+              <th>Vị trí</th>
+              <th>Số áo</th>
+              <th>Trạng thái</th>
+              <th>Lý do bận</th>
+              <th>Ghi chú</th>
+              {% if admin %}<th>Xoá</th>{% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for player in players %}
+            {% set pid = player.id|string %}
+            {% set pstatus = statuses.get(pid, {}) %}
+            {% set locked = not admin and pstatus.locked_at and (now - pstatus.locked_at > lock_duration) %}
+            {% set is_late = now > locked_at_global and (not pstatus.state) %}
+            {% if pid in statuses %}
+            <tr class="{% if locked or is_locked %}locked{% endif %}{% if is_late %} late{% endif %}">
+              <td>{{ player.order }}</td>
+              <td>{{ player.name }}</td>
+              <td>
+                {% for pos in player.position.split(',') %}
+                  {% if pos == "CLUB OWNER" %}
+                    <span class="position-box CLUB-OWNER">{{ pos }}</span>
+                  {% else %}
+                    <span class="position-box {{ pos }}">{{ pos }}</span>
+                  {% endif %}
+                {% endfor %}
+              </td>
+              <td>{{ player.number }}</td>
+              <td>
+                <select name="state_{{ pid }}" class="auto-submit {% if locked or is_locked %}disabled{% endif %}" {% if locked or is_locked %}disabled{% endif %}>
+                  <option value="" {% if pstatus.state == "" %}selected{% endif %}>Chưa chọn</option>
+                  <option value="join" {% if pstatus.state == "join" %}selected{% endif %}>✅ Tham gia</option>
+                  <option value="busy" {% if pstatus.state == "busy" %}selected{% endif %}>❌ Bận</option>
+                </select>
+              </td>
+              <td><input type="text" name="reason_{{ pid }}" value="{{ pstatus.reason }}" class="auto-submit {% if locked or is_locked %}disabled{% endif %}" {% if locked or is_locked %}readonly{% endif %}></td>
+              <td><input type="text" name="note_{{ pid }}" value="{% if is_late %}Trễ hạn đăng ký{% else %}{{ pstatus.note }}{% endif %}" class="auto-submit {% if locked or is_locked %}disabled{% endif %}" {% if locked or is_locked %}readonly{% endif %}></td>
+              {% if admin %}
+              <td>
+                <form id="remove-form-{{ pid }}" method="POST" action="{{ url_for('remove_player_from_session', date=schedule.id, player_id=player.id) }}?admin=1"></form>
+                <button type="submit" form="remove-form-{{ pid }}" onclick="return confirm('Bạn có chắc muốn xoá người này khỏi buổi đá này không?');" style="background-color: red; color: white; border: none; padding: 2px 6px; border-radius: 4px; font-size: 12px;">X</button>
+              </td>
+              {% endif %}
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="{{ 8 if admin else 7 }}" style="text-align: right; font-weight: bold; padding: 6px; font-size: 12px;">
+                ✅ Tổng số người tham gia: <span id="total-join">0</span>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+        <button type="submit" style="display: none;">Lưu</button>
+      </form>
+
+      <p><a href="{{ url_for('index') }}" style="margin-top: 10px; display: inline-block; font-size: 12px;">⬅️ Quay lại</a></p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Auto submit khi thay đổi trạng thái
+      document.querySelectorAll(".auto-submit").forEach(el => {
+        el.addEventListener("change", () => document.getElementById("register-form").submit());
+      });
+
+      // Countdown
+      const box = document.getElementById("deadline-box");
+      const countdownEl = document.getElementById("countdown");
+      const infoEl = document.getElementById("deadline-info");
+      const lockedAt = {{ locked_at_global }};
+      if (!lockedAt || isNaN(lockedAt)) {
+        countdownEl.textContent = "⚠️ Lỗi: Thời hạn không hợp lệ";
+        return;
+      }
+      const now = {{ now }};
+      let remaining = lockedAt - now;
+
+      function formatTime(sec) {
+        const days = Math.floor(sec / 86400);
+        const hours = Math.floor((sec % 86400) / 3600);
+        const minutes = Math.floor((sec % 3600) / 60);
+        const seconds = Math.floor(sec % 60);
+        const parts = [];
+        if (days > 0) parts.push(`${days} ngày`);
+        if (hours > 0 || days > 0) parts.push(`${hours} giờ`);
+        parts.push(`${minutes} phút`);
+        parts.push(`${seconds} giây`);
+        return parts.join(" ");
+      }
+
+      function formatDeadline(ts) {
+        return new Date(ts * 1000).toLocaleString('vi-VN', {
+          weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric',
+          hour: '2-digit', minute: '2-digit'
+        });
+      }
+
+      function updateCountdown() {
+        const deadlineStr = formatDeadline(lockedAt);
+        if (remaining > 0) {
+          countdownEl.textContent = `⏳ Còn lại: ${formatTime(remaining)}`;
+          countdownEl.style.color = remaining < 300 ? 'red' : '#000';
+          infoEl.innerHTML = `⏰ Hạn chót đăng ký: <b>${deadlineStr}</b>`;
+          remaining--;
+        } else {
+          countdownEl.textContent = "🔒 Đã hết hạn đăng ký";
+          infoEl.innerHTML = `🔒 Hạn chót đăng ký: <b>${deadlineStr}</b><br>Vui lòng liên hệ admin để thay đổi trạng thái.`;
+          box.style.backgroundColor = "#ffcdd2";
+          countdownEl.style.color = "darkred";
+        }
+      }
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+
+      // Đếm số người tham gia
+      function countJoins() {
+        let total = 0;
+        document.querySelectorAll("select").forEach(el => {
+          if (el.value === "join") total++;
+        });
+        document.getElementById("total-join").innerText = total;
+      }
+      countJoins();
+    });
+  </script>
+</body>
+</html>

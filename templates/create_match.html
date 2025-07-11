@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tạo trận đấu mới</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>⚽ Tạo trận đấu mới</h1>
+
+    <form method="POST">
+      <label>Ngày thi đấu:</label>
+      <input type="date" name="date" required>
+
+      <label>Giờ thi đấu:</label>
+      <input type="time" name="time" required>
+
+      <label>Tên sân:</label>
+      <input type="text" name="stadium" required>
+
+      <label>Link vị trí sân:</label>
+      <input type="url" name="location_link" placeholder="https://goo.gl/maps/..." required>
+
+      <button type="submit">➕ Tạo trận mới</button>
+    </form>
+
+    <p><a href="{{ url_for('home') }}">⬅ Quay lại trang chủ</a></p>
+  </div>
+</body>
+</html>

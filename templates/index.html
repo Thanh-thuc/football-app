@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng ký đá bóng</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="logo-top-right">
+  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-img">
+</div>
+<div class="logo-top-right">
+  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-img">
+</div>
+  <div class="container">
+    <h1>Danh sách các ngày thi đấu</h1>
+    <a href="{{ url_for('create') }}" class="create-button">➕ Thêm buổi đá mới</a>
+<a href="{{ url_for('admin_players') }}" class="btn">👤 Quản lý thành viên</a>
+
+    {% if schedules %}
+      {% for schedule in schedules %}
+<div class="schedule-card">
+  <h3>📅 {{ schedule.date }} – {{ schedule.time }}</h3>
+  <p>📍 {{ schedule.field }} – <a href="{{ schedule.map }}" target="_blank">Xem bản đồ</a></p>
+
+  <a href="{{ url_for('register', date=schedule.id) }}" class="btn">📄 Xem & Đăng ký</a>
+
+  {% if admin %}
+    <!-- 🔴 Nút xóa chỉ hiện nếu là admin -->
+    <form method="POST" action="{{ url_for('delete_schedule', date=schedule.id) }}?admin=1" onsubmit="return confirm('Bạn có chắc muốn xoá buổi đá này không?')">
+      <button type="submit" class="btn delete-btn">🗑️ Xóa</button>
+    </form>
+  {% endif %}
+</div>
+{% endfor %}
+{% endif %}
+</html>

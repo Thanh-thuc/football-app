@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Coach Mode</title>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <style>
+.football-field {
+  background: linear-gradient(#c8e6c9, #a5d6a7);
+  border: 4px solid white;
+  border-radius: 16px;
+  padding: 30px 10px;
+  box-shadow: inset 0 0 0 2px #ffffff66;
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 10px;
+}
+h1 {
+  text-align: center;
+}
+.info {
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+#formation-select {
+  margin: 0 auto 20px;
+  display: block;
+  font-size: 14px;
+}
+.formation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 100px;
+}
+.line {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.position-box {
+  width: 200px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.2);
+  padding: 8px;
+  text-align: center;
+  font-size: 13px;
+}
+.position-box select {
+  width: 100%;
+  margin-top: 4px;
+  font-size: 13px;
+}
+.GK { background-color: #90caf9; }
+.DEF { background-color: #a5d6a7; }
+.MID { background-color: #fff59d; }
+.FWD { background-color: #ef9a9a; }
+.select2-container {
+  width: 100% !important;
+}
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.save-button, .back-button, .download-button {
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.save-button {
+  background-color: #4CAF50;
+  color: white;
+}
+.save-button:hover {
+  background-color: #388e3c;
+}
+.back-button {
+  background-color: #9e9e9e;
+  color: white;
+}
+.back-button:hover {
+  background-color: #757575;
+}
+.download-button {
+  background-color: #03a9f4;
+  color: white;
+}
+.download-button:hover {
+  background-color: #0288d1;
+}
+  </style>
+</head>
+<body>
+  <div id="formation-wrapper">
+    <h1>Sơ đồ chiến thuật: {{ schedule.date }} – {{ schedule.time }}</h1>
+    <div class="info">🏟️ {{ schedule.field }} – <a href="{{ schedule.map }}" target="_blank">Xem bản đồ</a></div>
+
+    <select id="formation-select">
+      <option value="4-4-2">4-4-2</option>
+      <option value="4-3-3">4-3-3</option>
+      <option value="4-2-3-1">4-2-3-1</option>
+      <option value="3-5-2">3-5-2</option>
+      <option value="3-4-3">3-4-3</option>
+      <option value="5-3-2">5-3-2</option>
+      <option value="4-5-1">4-5-1</option>
+      <option value="4-1-4-1">4-1-4-1</option>
+      <option value="4-2-2-2">4-2-2-2</option>
+      <option value="3-6-1">3-6-1</option>
+      <option value="4-3-1-2">4-3-1-2</option>
+    </select>
+
+    <div class="button-group">
+      <button class="save-button" onclick="saveFormation()">💾 Lưu đội hình</button>
+      <button class="download-button" onclick="downloadFormationAsImage()">🖼️ Tải ảnh đội hình</button>
+      <button class="back-button" onclick="goBackToRegister()">🔙 Quay lại đăng ký</button>
+    </div>
+
+    <div class="football-field">
+      <div class="formation" id="formation">
+        </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script>
+    const allPlayers = {{ all_joined_players | tojson }};
+
+    const formations = {
+      "4-4-2": [["ST1", "ST2"], ["LM", "CM1", "CM2", "RM"], ["LB", "CB1", "CB2", "RB"], ["GK"]],
+      "4-3-3": [["LW", "ST", "RW"], ["CM1", "CM2", "CM3"], ["LB", "CB1", "CB2", "RB"], ["GK"]],
+      "4-2-3-1": [["ST"], ["CAM1", "CAM2", "CAM3"], ["DM1", "DM2"], ["LB", "CB1", "CB2", "RB"], ["GK"]],
+      "3-5-2": [["ST1", "ST2"], ["LM", "CM1", "CM2", "CM3", "RM"], ["CB1", "CB2", "CB3"], ["GK"]],
+      "3-4-3": [["LW", "ST", "RW"], ["LM", "CM1", "CM2", "RM"], ["CB1", "CB2", "CB3"], ["GK"]],
+      "5-3-2": [["ST1", "ST2"], ["CM1", "CM2", "CM3"], ["LB", "CB1", "CB2", "CB3", "RB"], ["GK"]],
+      "4-5-1": [["ST"], ["LM", "CM1", "CM2", "CM3", "RM"], ["LB", "CB1", "CB2", "RB"], ["GK"]],
+      "4-1-4-1": [["ST"], ["LM", "CM1", "DM", "CM2", "RM"], ["LB", "CB1", "CB2", "RB"], ["GK"]],
+      "4-2-2-2": [["ST1", "ST2"], ["CAM1", "CAM2"], ["DM1", "DM2"], ["LB", "CB1", "CB2", "RB"], ["GK"]],
+      "3-6-1": [["ST"], ["LM", "CM1", "CM2", "CM3", "CM4", "RM"], ["CB1", "CB2", "CB3"], ["GK"]],
+      "4-3-1-2": [["ST1", "ST2"], ["CAM"], ["CM1", "CM2", "CM3"], ["LB", "CB1", "CB2", "RB"], ["GK"]],
+    };
+
+    const positionType = pos => {
+      if (pos.includes("GK")) return "GK";
+      if (["LB","RB","CB"].some(x => pos.includes(x))) return "DEF";
+      if (["LM","RM","CM","DM","CAM"].some(x => pos.includes(x))) return "MID";
+      if (["ST","CF","LW","RW"].some(x => pos.includes(x))) return "FWD";
+      return "";
+    };
+
+    function renderFormation(name) {
+      const formation = formations[name];
+      const container = document.getElementById("formation");
+      container.innerHTML = "";
+
+      formation.forEach(line => {
+        const lineDiv = document.createElement("div");
+        lineDiv.className = "line";
+        line.forEach(pos => {
+          const type = positionType(pos);
+          const box = document.createElement("div");
+          box.className = `position-box ${type}`;
+          box.innerHTML = `
+            <div id="label-pos-${pos}">${pos}</div>
+            <div>Đá chính:
+              <select class="starter select-player" data-position="${pos}">
+                <option value="">-- Chọn --</option>
+                ${allPlayers.map(p => `<option value="${p.id}">${p.name} (#${p.number})</option>`).join('')}
+              </select>
+            </div>
+            <div>Dự bị:
+              ${[0,1,2].map(i => `
+                <select class="substitute select-player" data-position="${pos}">
+                  <option value="">-- Chọn --</option>
+                  ${allPlayers.map(p => `<option value="${p.id}">${p.name} (#${p.number})</option>`).join('')}
+                </select>
+              `).join('')}
+            </div>
+          `;
+          lineDiv.appendChild(box);
+        });
+        container.appendChild(lineDiv);
+      });
+    }
+
+    function getSelectedIds(excludeSelect = null) {
+      return Array.from(document.querySelectorAll(".select-player"))
+        .filter(sel => sel !== excludeSelect && sel.value)
+        .map(sel => sel.value);
+    }
+
+    function updateSelectOptions(select) {
+      const selectedIds = getSelectedIds(select);
+      const currentVal = select.value;
+      let options = ['<option value="">-- Chọn --</option>'];
+      allPlayers.forEach(p => {
+        const id = p.id.toString();
+        if (!selectedIds.includes(id) || id === currentVal) {
+          options.push(`<option value="${id}" ${id === currentVal ? 'selected' : ''}>${p.name} (#${p.number})</option>`);
+        }
+      });
+      select.innerHTML = options.join('');
+      $(select).trigger('change.select2');
+    }
+
+    function updateLabel(pos) {
+      const select = document.querySelector(`select.starter[data-position="${pos}"]`);
+      const label = document.getElementById(`label-pos-${pos}`);
+      if (select && label) {
+        const player = select.value ? allPlayers.find(p => p.id.toString() === select.value) : null;
+        label.textContent = player && player.position && player.position.trim() ? player.position.split(',')[0].trim() : pos;
+      }
+    }
+
+    function updateAllSelects(changedSelect) {
+      document.querySelectorAll(".select-player").forEach(select => {
+        if (select !== changedSelect) {
+          updateSelectOptions(select);
+        }
+      });
+      document.querySelectorAll(".starter").forEach(sel => {
+        updateLabel(sel.dataset.position);
+      });
+    }
+
+    function saveFormation() {
+      const formationName = document.getElementById("formation-select").value;
+      const formationData = {
+        formation: formationName,
+        positions: {}
+      };
+
+      document.querySelectorAll(".position-box").forEach(box => {
+        const position = box.querySelector(".starter").dataset.position;
+        const starter = box.querySelector(".starter").value;
+        const substitutes = Array.from(box.querySelectorAll(".substitute")).map(sel => sel.value).filter(val => val);
+        formationData.positions[position] = { starter, substitutes };
+      });
+
+      const formationKey = "savedFormation_" + {{ schedule.id }};
+      localStorage.setItem(formationKey, JSON.stringify(formationData));
+      alert("Đội hình đã được lưu!");
+    }
+
+    function goBackToRegister() {
+      window.location.href = "/register/{{ schedule.id }}";
+    }
+
+   function downloadFormationAsImage() {
+  const wrapper = document.getElementById("formation-wrapper");
+  const lines = document.querySelectorAll(".line");
+
+  // Lưu lại style cũ
+  const oldWrapperStyle = {
+    width: wrapper.style.width,
+    maxWidth: wrapper.style.maxWidth,
+    margin: wrapper.style.margin,
+    padding: wrapper.style.padding,
+  };
+
+  const oldLineStyles = [];
+  lines.forEach(line => {
+    oldLineStyles.push({
+      gap: line.style.gap,
+      flexWrap: line.style.flexWrap,
+      justifyContent: line.style.justifyContent,
+    });
+    line.style.flexWrap = "nowrap";
+    line.style.gap = "10px";
+    line.style.justifyContent = "center";
+  });
+
+  // Áp dụng style mới khi xuất ảnh
+  wrapper.style.width = "950px";
+  wrapper.style.maxWidth = "950px";
+  wrapper.style.margin = "0 auto";
+  wrapper.style.padding = "10px";
+
+  html2canvas(wrapper, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#ffffff",
+    scrollY: -window.scrollY,
+  }).then(canvas => {
+    const link = document.createElement("a");
+    const date = "{{ schedule.date|replace('/', '-') }}".replace(/\s+/g, "_");
+    const time = "{{ schedule.time|replace(':', '-') }}".replace(/\s+/g, "_");
+    link.download = `doi_hinh_${date}_${time}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+
+    // Khôi phục style wrapper
+    wrapper.style.width = oldWrapperStyle.width;
+    wrapper.style.maxWidth = oldWrapperStyle.maxWidth;
+    wrapper.style.margin = oldWrapperStyle.margin;
+    wrapper.style.padding = oldWrapperStyle.padding;
+
+    // Khôi phục từng dòng line
+    lines.forEach((line, i) => {
+      const old = oldLineStyles[i];
+      line.style.flexWrap = old.flexWrap;
+      line.style.gap = old.gap;
+      line.style.justifyContent = old.justifyContent;
+    });
+  });
+}
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderFormation("4-4-2");
+
+      const formationKey = "savedFormation_" + {{ schedule.id }};
+      const saved = localStorage.getItem(formationKey);
+      if (saved) {
+        const data = JSON.parse(saved);
+        document.getElementById("formation-select").value = data.formation;
+        renderFormation(data.formation);
+        setTimeout(() => {
+          for (const [pos, val] of Object.entries(data.positions)) {
+            const starterSel = document.querySelector(`select.starter[data-position="${pos}"]`);
+            if (starterSel) starterSel.value = val.starter;
+            const subs = document.querySelectorAll(`select.substitute[data-position="${pos}"]`);
+            subs.forEach((sel, i) => {
+              sel.value = val.substitutes[i] || "";
+            });
+          }
+          updateAllSelects();
+          $('.select-player').trigger('change.select2');
+        }, 100);
+      }
+
+      $('#formation-select').on('change', function() {
+        renderFormation(this.value);
+        $('.select-player').select2({
+          placeholder: "Chọn cầu thủ",
+          allowClear: true,
+          width: 'resolve',
+          language: { noResults: () => 'Không tìm thấy' }
+        }).on('select2:select select2:unselect', function(e) {
+          const select = e.target;
+          updateSelectOptions(select);
+          if ($(select).hasClass('starter')) {
+            updateLabel(select.dataset.position);
+          }
+          updateAllSelects(select);
+        });
+
+        document.querySelectorAll(".select-player").forEach(select => {
+          updateSelectOptions(select);
+        });
+        document.querySelectorAll(".starter").forEach(sel => {
+          updateLabel(sel.dataset.position);
+        });
+      });
+
+      $(document).on('change', '.select-player', function() {
+        const select = this;
+        updateSelectOptions(select);
+        if ($(select).hasClass('starter')) {
+          updateLabel(select.dataset.position);
+        }
+        updateAllSelects(select);
+      });
+
+      $('.select-player').select2({
+        placeholder: "Chọn cầu thủ",
+        allowClear: true,
+        width: 'resolve',
+        language: { noResults: () => 'Không tìm thấy' }
+      });
+    });
+  </script>
+</body>
+</html>

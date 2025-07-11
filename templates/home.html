@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trang chính - Đăng ký đá bóng</title>
+</head>
+<body>
+  <h1>Danh sách các buổi đá bóng</h1>
+<a href="{{ url_for('create') }}" class="create-button button">
+  ➕ Thêm buổi đá mới
+</a>
+
+<a href="{{ url_for('manage_players') }}" class="button">
+  👤 Quản lý thành viên
+</a>
+
+
+  <ul>
+    {% for session in sessions %}
+      <li>
+        <a href="/session/{{ loop.index0 }}">{{ session.name }} - {{ session.date }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

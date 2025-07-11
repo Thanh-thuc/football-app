@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý cầu thủ</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>👥 Quản lý cầu thủ</h1>
+
+    <!-- Danh sách cầu thủ hiện có -->
+    <form method="POST">
+      <table>
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Tên</th>
+            <th>Vị trí</th>
+            <th>Số áo</th>
+            <th>Xoá</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for player in players %}
+          <tr>
+            <td><input type="number" name="order_{{ player.id }}" value="{{ player.order }}" required></td>
+            <td><input type="text" name="name_{{ player.id }}" value="{{ player.name }}" required></td>
+            <td><input type="text" name="position_{{ player.id }}" value="{{ player.position }}"></td>
+            <td><input type="number" name="shirt_number_{{ player.id }}" value="{{ player.shirt_number }}"></td>
+            <td><input type="checkbox" name="delete_{{ player.id }}"></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <br>
+      <button type="submit" name="action" value="save">💾 Lưu thay đổi</button>
+    </form>
+
+    <hr>
+
+    <!-- Thêm cầu thủ mới -->
+    <h3>➕ Thêm cầu thủ mới</h3>
+    <form method="POST">
+      <label>Tên:</label>
+      <input type="text" name="new_name" required>
+      <label>Vị trí:</label>
+      <input type="text" name="new_position">
+      <label>Số áo:</label>
+      <input type="number" name="new_shirt_number">
+      <label>STT:</label>
+      <input type="number" name="new_order" required>
+      <button type="submit" name="action" value="add">✅ Thêm</button>
+    </form>
+
+    <p><a href="{{ url_for('home') }}">⬅ Quay lại trang chủ</a></p>
+  </div>
+</body>
+</html>

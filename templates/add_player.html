@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thêm thành viên mới</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>➕ Thêm thành viên mới</h1>
+    <form method="POST">
+      <label>👤 Tên:</label>
+      <input type="text" name="name" required>
+
+      <label>🎽 Vị trí thi đấu:</label>
+      <input type="text" name="position" placeholder="vd: Tiền đạo" required>
+
+      <label>🔢 Số áo:</label>
+      <input type="number" name="jersey" required>
+
+      <label>📋 Số thứ tự (trong bảng):</label>
+      <input type="number" name="order" required>
+
+      <button type="submit">✅ Thêm thành viên</button>
+    </form>
+    <p><a href="{{ url_for('home') }}">⬅ Quay lại trang chủ</a></p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,355 @@
+{
+  "players": [
+    {
+      "id": 4,
+      "name": "TRIEU NGUYEN",
+      "position": "GK,CLUB OWNER",
+      "number": 3,
+      "order": 1
+    },
+    {
+      "id": 5,
+      "name": "THANH TUẤN",
+      "position": "COACH",
+      "number": 18,
+      "order": 2
+    },
+    {
+      "id": 6,
+      "name": "DUY NGUYEN",
+      "position": "ST",
+      "number": 7,
+      "order": 3
+    },
+    {
+      "id": 8,
+      "name": "CÔNG VĂN",
+      "position": "",
+      "number": 2,
+      "order": 4
+    },
+    {
+      "id": 7,
+      "name": "QUỐC HOÀ",
+      "position": "",
+      "number": 66,
+      "order": 5
+    },
+    {
+      "id": 9,
+      "name": "VIẾT LỘC",
+      "position": "DM",
+      "number": 6,
+      "order": 7
+    },
+    {
+      "id": 10,
+      "name": "QUANG NHÂN",
+      "position": "AM",
+      "number": 8,
+      "order": 8
+    },
+    {
+      "id": 11,
+      "name": "XUÂN HIẾU",
+      "position": "RM",
+      "number": 9,
+      "order": 9
+    },
+    {
+      "id": 12,
+      "name": "VĂN KHẢI",
+      "position": "ST",
+      "number": 10,
+      "order": 10
+    },
+    {
+      "id": 13,
+      "name": "NGỌC SƠN",
+      "position": "CB",
+      "number": 11,
+      "order": 11
+    },
+    {
+      "id": 14,
+      "name": "DUY TÂN",
+      "position": "LB",
+      "number": 12,
+      "order": 12
+    },
+    {
+      "id": 15,
+      "name": "CHÍ THÀNH",
+      "position": "RB",
+      "number": 15,
+      "order": 13
+    },
+    {
+      "id": 16,
+      "name": "NHÂN (FAN MESSI)",
+      "position": "AM",
+      "number": 16,
+      "order": 14
+    },
+    {
+      "id": 17,
+      "name": "NGỌC GIAI",
+      "position": "LM",
+      "number": 17,
+      "order": 15
+    },
+    {
+      "id": 3,
+      "name": "THÀNH THỨC",
+      "position": "RB",
+      "number": 19,
+      "order": 16
+    },
+    {
+      "id": 18,
+      "name": "TUẤN LẬP",
+      "position": "LW",
+      "number": 33,
+      "order": 19
+    },
+    {
+      "id": 19,
+      "name": "VĂN ĐÔNG",
+      "position": "AM",
+      "number": 35,
+      "order": 20
+    },
+    {
+      "id": 20,
+      "name": "VĂN NAM",
+      "position": "LB",
+      "number": 36,
+      "order": 21
+    },
+    {
+      "id": 23,
+      "name": "NHẬT TÂN",
+      "position": "RM",
+      "number": 74,
+      "order": 21
+    },
+    {
+      "id": 21,
+      "name": "MINH HOÀ",
+      "position": "DM",
+      "number": 39,
+      "order": 22
+    },
+    {
+      "id": 22,
+      "name": "HỮU ĐỨC",
+      "position": "LB",
+      "number": 47,
+      "order": 23
+    },
+    {
+      "id": 24,
+      "name": "VĂN LƯỢNG",
+      "position": "RB",
+      "number": 77,
+      "order": 25
+    },
+    {
+      "id": 25,
+      "name": "QUANG TRỌNG",
+      "position": "SS",
+      "number": 79,
+      "order": 26
+    },
+    {
+      "id": 26,
+      "name": "BÌNH (CNC)",
+      "position": "RM",
+      "number": 14,
+      "order": 28
+    },
+    {
+      "id": 27,
+      "name": "HIÉU (EI Ev En)",
+      "position": "GK,LB",
+      "number": 34,
+      "order": 29
+    },
+    {
+      "id": 28,
+      "name": "HOÀNG PHƯƠNG",
+      "position": "GK",
+      "number": 23,
+      "order": 30
+    }
+  ],
+  "schedules": [
+    {
+      "id": "2025-07-13",
+      "date": "2025-07-13",
+      "time": "08:00",
+      "field": "CÂY SỘP",
+      "map": "https://g.co/kgs/MAzkoXb",
+      "locked_at": 1752213600,
+      "status": {
+        "4": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204021.019186
+        },
+        "5": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204022.3065279
+        },
+        "6": {
+          "state": "busy",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204024.5715868
+        },
+        "8": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "7": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204026.3338578
+        },
+        "9": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204029.0507383
+        },
+        "10": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204030.2946649
+        },
+        "11": {
+          "state": "busy",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204032.1943321
+        },
+        "12": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204033.7777443
+        },
+        "13": {
+          "state": "busy",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204035.1001422
+        },
+        "14": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204036.6032436
+        },
+        "15": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204037.8419263
+        },
+        "16": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204040.2580779
+        },
+        "17": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204043.3217027
+        },
+        "3": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204071.4500177
+        },
+        "18": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204069.034983
+        },
+        "19": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204067.2978847
+        },
+        "20": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204065.5943096
+        },
+        "23": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204063.95507
+        },
+        "21": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204062.3134062
+        },
+        "22": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204060.6345606
+        },
+        "24": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204058.386433
+        },
+        "25": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204056.6426725
+        },
+        "26": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204054.8981616
+        },
+        "27": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204052.7464614
+        },
+        "28": {
+          "state": "join",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752204048.8985825
+        }
+      }
+    }
+  ],
+  "sessions": {}
+}

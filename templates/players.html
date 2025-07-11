@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý cầu thủ</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>👤 Danh sách thành viên</h1>
+
+    <form method="POST" action="{{ url_for('add_player') }}">
+      <input type="text" name="name" placeholder="Tên" required>
+      <input type="text" name="position" placeholder="Vị trí" required>
+      <input type="number" name="number" placeholder="Số áo" required>
+      <input type="number" name="order" placeholder="Thứ tự" required>
+      <button type="submit">➕ Thêm thành viên</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>STT</th><th>Tên</th><th>Vị trí</th><th>Số áo</th><th>Xoá</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for player in players %}
+        <tr>
+          <td>{{ player.order }}</td>
+          <td>{{ player.name }}</td>
+          <td>{{ player.position }}</td>
+          <td>{{ player.number }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('delete_player', player_id=player.id) }}">
+              <button type="submit">🗑️</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <p><a href="{{ url_for('index') }}">⬅️ Quay về trang chủ</a></p>
+  </div>
+</body>
+</html>

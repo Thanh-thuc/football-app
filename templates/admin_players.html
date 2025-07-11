@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý thành viên</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>👥 Quản lý thành viên</h1>
+
+    <form method="POST">
+      <table>
+        <thead>
+          <tr>
+            <th>STT</th><th>Tên</th><th>Vị trí</th><th>Số áo</th><th>Xóa</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for player in players %}
+          <tr>
+            <td><input type="number" name="order_{{ player.id }}" value="{{ player.order }}"></td>
+            <td><input type="text" name="name_{{ player.id }}" value="{{ player.name }}"></td>
+            <td>
+              <select name="position_{{ player.id }}[]" multiple size="3">
+                {% set selected_positions = player.position.split(',') %}
+                {% for p in ['GK','LB','RB','CB','LW','RW','SS','ST','CF','LM','RM','AM','CM','DM','COACH','CLUB OWNER'] %}
+                  <option value="{{ p }}" {% if p in selected_positions %}selected{% endif %}>{{ p }}</option>
+                {% endfor %}
+              </select>
+            </td>
+            <td><input type="number" name="number_{{ player.id }}" value="{{ player.number }}"></td>
+            <td><input type="checkbox" name="delete_{{ player.id }}"></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <h3>➕ Thêm người mới</h3>
+      <input type="text" name="new_name" placeholder="Tên">
+      <select name="new_position[]" multiple size="3">
+        {% for p in ['GK','LB','RB','CB','LW','RW','SS','ST','CF','LM','RM','AM','CM','DM','COACH','CLUB OWNER'] %}
+          <option value="{{ p }}">{{ p }}</option>
+        {% endfor %}
+      </select>
+      <input type="number" name="new_number" placeholder="Số áo">
+      <input type="number" name="new_order" placeholder="STT">
+
+      <div>
+        <button type="submit">💾 Lưu thay đổi</button>
+        <a href="{{ url_for('index') }}">⬅️ Về trang chủ</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

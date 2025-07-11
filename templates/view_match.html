@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết trận đấu</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script>
+    // Tự động khóa ô sau 30 giây sau khi thay đổi
+    function lockAfterDelay(input) {
+      if (input.dataset.locked === "true") return;
+
+      input.dataset.locked = "true";
+      input.disabled = true;
+    }
+
+    function startLockTimer(input) {
+      setTimeout(() => lockAfterDelay(input), 30000); // 30 giây
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>📝 Đăng ký trận {{ match.date }} - {{ match.time }}</h1>
+    <p><strong>Sân:</strong> {{ match.stadium }}</p>
+    <p><a href="{{ match.location_link }}" target="_blank">📍 Vị trí sân</a></p>
+
+    <form method="POST">
+      <table>
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Tên</th>
+            <th>Vị trí</th>
+            <th>Số áo</th>
+            <th>Trạng thái</th>
+            <th>Ghi chú</th>
+            <th>Lý do bận</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for player in players %}
+          <tr>
+            <td>{{ player.order }}</td>
+            <td>{{ player.name }}</td>
+            <td>{{ player.position }}</td>
+            <td>{{ player.shirt_number }}</td>
+            <td>
+              <select name="status_{{ player.id }}" onchange="startLockTimer(this)">
+                <option value="Tham gia" {% if player.status == 'Tham gia' %}selected{% endif %}>Tham gia</option>
+                <option value="Bận" {% if player.status == 'Bận' %}selected{% endif %}>Bận</option>
+                <option value="" {% if player.status == '' %}selected{% endif %}>--</option>
+              </select>
+            </td>
+            <td><input type="text" name="note_{{ player.id }}" value="{{ player.note }}" oninput="startLockTimer(this)"></td>
+            <td><input type="text" name="reason_{{ player.id }}" value="{{ player.reason }}" oninput="startLockTimer(this)"></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <br>
+      <button type="submit">💾 Cập nhật</button>
+    </form>
+
+    <p><a href="{{ url_for('home') }}">⬅ Quay lại trang chủ</a></p>
+  </div>
+</body>
+</html>

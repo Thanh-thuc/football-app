@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng ký thi đấu - {{ match.field }} {{ match.date }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script>
+    function lockCell(id) {
+      let element = document.getElementById(id);
+      if (element) {
+        element.disabled = true;
+        element.classList.add("locked");
+      }
+    }
+
+    function unlockCell(id) {
+      let element = document.getElementById(id);
+      if (element) {
+        element.disabled = false;
+        element.classList.remove("locked");
+      }
+    }
+
+    function startLockTimer(id) {
+      unlockCell(id);
+      setTimeout(() => lockCell(id), 30000); // 30 giây
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>🏟️ {{ match.field }} – {{ match.date }} lúc {{ match.time }}</h2>
+    {% if match.map_link %}
+      <p><a href="{{ match.map_link }}" target="_blank">📍 Xem bản đồ sân</a></p>
+    {% endif %}
+
+    <form method="POST">
+      <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tên</th>
+            <th>Vị trí</th>
+            <th>Số áo</th>
+            <th>Tham gia</th>
+            <th>Bận</th>
+            <th>Ghi chú</th>
+            <th>Lý do bận</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for player in players %}
+          <tr>
+            <td>{{ player.order }}</td>
+            <td>{{ player.name }}</td>
+            <td>{{ player.position }}</td>
+            <td>{{ player.number }}</td>
+            <td>
+              <input type="radio" name="status_{{ player.id }}" value="THAM GIA"
+                     {% if responses[player.id].status == 'THAM GIA' %}checked{% endif %}
+                     onclick="startLockTimer('note_{{ player.id }}'); startLockTimer('reason_{{ player.id }}')">
+            </td>
+            <td>
+              <input type="radio" name="status_{{ player.id }}" value="BẬN"
+                     {% if responses[player.id].status == 'BẬN' %}checked{% endif %}
+                     onclick="startLockTimer('note_{{ player.id }}'); startLockTimer('reason_{{ player.id }}')">
+            </td>
+            <td>
+              <input type="text" name="note_{{ player.id }}" id="note_{{ player.id }}"
+                     value="{{ responses[player.id].note }}" disabled>
+            </td>
+            <td>
+              <input type="text" name="reason_{{ player.id }}" id="reason_{{ player.id }}"
+                     value="{{ responses[player.id].reason }}" disabled>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <button type="submit" style="margin-top: 10px;">💾 Lưu</button>
+    </form>
+
+    <p><a href="{{ url_for('manage_matches') }}">⬅ Quản lý lịch thi đấu</a></p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thêm buổi đá mới</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>➕ Thêm buổi đá mới</h1>
+    <form method="POST">
+      <label>Ngày thi đấu:</label>
+      <input type="date" name="date" required>
+
+      <label>Giờ thi đấu:</label>
+      <input type="time" name="time" required>
+      <label>Thời điểm khoá (ví dụ: 2025-07-10T17:00):</label>
+      <input type="datetime-local" name="locked_at" required>
+      <label>Sân thi đấu:</label>
+      <input type="text" name="field" required>
+
+      <label>Link bản đồ (Google Maps):</label>
+      <input type="url" name="map" required>
+
+      <button type="submit">Lưu</button>
+      <a href="{{ url_for('index') }}" class="btn">⬅️ Quay lại</a>
+    </form>
+  </div>
+</body>
+</html>
