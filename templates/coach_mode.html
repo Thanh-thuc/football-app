@@ -5,6 +5,17 @@
   <title>Coach Mode</title>
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <style>
+.logo-top-right {
+  position: absolute;
+  top: 35px;
+  right: 352px;
+  z-index: 999;
+}
+
+.logo-img {
+  max-width: 200px;
+  height: auto;
+}
 .football-field {
   background: linear-gradient(#c8e6c9, #a5d6a7);
   border: 4px solid white;
@@ -107,6 +118,9 @@ h1 {
   </style>
 </head>
 <body>
+<div class="logo-top-right">
+  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-img">
+</div>
   <div id="formation-wrapper">
     <h1>Sơ đồ chiến thuật: {{ schedule.date }} – {{ schedule.time }}</h1>
     <div class="info">🏟️ {{ schedule.field }} – <a href="{{ schedule.map }}" target="_blank">Xem bản đồ</a></div>

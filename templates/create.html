@@ -3,28 +3,146 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thêm buổi đá mới</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>Thêm buổi đá bóng mới</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .logo-top-right {
+      position: absolute;
+      top: 24px;
+      right: 500px;
+      z-index: 1000;
+    }
+
+    .logo-img {
+      max-width: 90px;
+      height: auto;
+    }
+
+    .form-container {
+      max-width: 700px;
+      margin: auto;
+      background-color: #fff;
+      padding: 20px 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #2e7d32;
+      font-size: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    input[type="datetime-local"],
+    input[type="date"],
+    input[type="time"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .btn-group {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    a.btn-secondary {
+      background-color: #2196F3;
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      display: inline-block;
+      font-size: 14px;
+    }
+
+    a.btn-secondary:hover {
+      background-color: #1976D2;
+    }
+
+    @media (max-width: 600px) {
+      .btn-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>➕ Thêm buổi đá mới</h1>
+  <!-- 🔰 Logo góc phải -->
+  <div class="logo-top-right">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-img">
+  </div>
+
+  <div class="form-container">
+    <h2>➕ Thêm buổi đá mới</h2>
     <form method="POST">
-      <label>Ngày thi đấu:</label>
-      <input type="date" name="date" required>
+      <div class="form-group">
+        <label for="date">Ngày thi đấu:</label>
+        <input type="date" name="date" id="date" required>
+      </div>
 
-      <label>Giờ thi đấu:</label>
-      <input type="time" name="time" required>
-      <label>Thời điểm khoá (ví dụ: 2025-07-10T17:00):</label>
-      <input type="datetime-local" name="locked_at" required>
-      <label>Sân thi đấu:</label>
-      <input type="text" name="field" required>
+      <div class="form-group">
+        <label for="time">Giờ thi đấu:</label>
+        <input type="time" name="time" id="time" required>
+      </div>
 
-      <label>Link bản đồ (Google Maps):</label>
-      <input type="url" name="map" required>
+      <div class="form-group">
+        <label for="locked_at">Thời điểm khoá (ví dụ: 2025-07-10T17:00):</label>
+        <input type="datetime-local" name="locked_at" id="locked_at" required>
+      </div>
 
-      <button type="submit">Lưu</button>
-      <a href="{{ url_for('index') }}" class="btn">⬅️ Quay lại</a>
+      <div class="form-group">
+        <label for="location">Sân thi đấu:</label>
+        <input type="text" name="location" id="location" required>
+      </div>
+
+      <div class="form-group">
+        <label for="map_link">Bản đồ (Google Maps):</label>
+        <input type="url" name="map_link" id="map_link" placeholder="https://maps.google.com" required>
+      </div>
+
+      <div class="btn-group">
+        <button type="submit">✅ Lưu</button>
+        <a href="/" class="btn-secondary">⬅️ Quay lại</a>
+      </div>
     </form>
   </div>
 </body>

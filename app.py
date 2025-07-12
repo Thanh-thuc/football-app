@@ -303,6 +303,16 @@ def inject_helpers():
             return "FWD"
         else:
             return ""
-    return dict(get_line_color=get_line_color)
+
+    def format_date_with_weekday(date_str):
+        try:
+            dt = datetime.strptime(date_str, "%Y-%m-%d")
+            weekday_vi = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"]
+            weekday = weekday_vi[dt.weekday()]
+            return f"{weekday} | {dt.strftime('%d-%m-%Y')}"
+        except:
+            return date_str
+
+    return dict(get_line_color=get_line_color, format_date_with_weekday=format_date_with_weekday)
 if __name__ == "__main__":
     app.run(debug=True)

@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng ký buổi đá</title>
   <style>
-    .logo-top-right { position: absolute; top: 10px; right: 10px; }
-    .logo-img { max-width: 100px; height: auto; }
+    .logo-top-right { position: absolute; top: 10px; right: 450px; }
+    .logo-img { max-width: 150px; height: auto; }
     .locked { background-color: #f0f0f0; color: #888; }
     .late { background-color: #fff3e0 !important; }
     #deadline-box { background-color: #ffcc80; padding: 8px; margin: 10px 0; border-radius: 6px; font-weight: bold; text-align: center; color: #333; }
@@ -26,7 +26,7 @@
       font-size: 12px; 
     }
     .register-table th { 
-      background-color: #4CAF50; /* Màu xanh lá cho tiêu đề */
+      background-color: #4CAF50; 
       color: white; 
     }
     .register-table tr:nth-child(even) { background-color: #f9f9f9; }
@@ -48,17 +48,16 @@
       border-radius: 3px; 
       color: white; 
     }
-    .position-box.COACH { background-color: #2196F3; } /* Xanh lam */
-    .position-box.CLUB-OWNER { background-color: #9C27B0; } /* Tím - Thay đổi cách đặt tên lớp */
-    .position-box.GK { background-color: #3F51B5; } /* Xanh dương */
-    .position-box.RB, .position-box.CB, .position-box.LB { background-color: #4CAF50; } /* Xanh lá */
-    .position-box.LM, .position-box.RM, .position-box.DM, .position-box.AM { background-color: #FFC107; } /* Vàng */
-    .position-box.ST, .position-box.CF, .position-box.SS, .position-box.LW, .position-box.RW { background-color: #F44336; } /* Đỏ */
+    .position-box.COACH { background-color: #2196F3; }
+    .position-box.CLUB-OWNER { background-color: #9C27B0; }
+    .position-box.GK { background-color: #3F51B5; }
+    .position-box.RB, .position-box.CB, .position-box.LB { background-color: #4CAF50; }
+    .position-box.LM, .position-box.RM, .position-box.DM, .position-box.AM { background-color: #FFC107; }
+    .position-box.ST, .position-box.CF, .position-box.SS, .position-box.LW, .position-box.RW { background-color: #F44336; }
     #toggle-coach { margin: 5px 0; }
     a { margin-top: 10px; display: inline-block; font-size: 12px; }
     .container { position: relative; padding-top: 40px; }
 
-    /* Responsive design cho mobile */
     @media (max-width: 768px) {
       .container { padding-top: 30px; }
       .logo-top-right { top: 5px; right: 5px; }
@@ -100,6 +99,12 @@
       {% endif %}
 
       <form method="POST" id="register-form">
+
+        <!-- ✅ Nút Xuất PDF -->
+        <div style="text-align: right; margin: 10px 5px;">
+          <button type="button" onclick="exportToPDF()">📄 Xuất bảng đăng ký PDF</button>
+        </div>
+
         <table class="register-table">
           <thead>
             <tr>
@@ -169,12 +174,10 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      // Auto submit khi thay đổi trạng thái
       document.querySelectorAll(".auto-submit").forEach(el => {
         el.addEventListener("change", () => document.getElementById("register-form").submit());
       });
 
-      // Countdown
       const box = document.getElementById("deadline-box");
       const countdownEl = document.getElementById("countdown");
       const infoEl = document.getElementById("deadline-info");
@@ -224,7 +227,6 @@
       updateCountdown();
       setInterval(updateCountdown, 1000);
 
-      // Đếm số người tham gia
       function countJoins() {
         let total = 0;
         document.querySelectorAll("select").forEach(el => {
@@ -234,6 +236,22 @@
       }
       countJoins();
     });
+  </script>
+
+  <!-- ✅ Thêm thư viện html2pdf và hàm export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    function exportToPDF() {
+      const element = document.querySelector('.content-wrapper');
+      const opt = {
+        margin: 0.2,
+        filename: 'Bảng đăng ký {{ schedule.date.replace("/", "-") }}.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(element).save();
+    }
   </script>
 </body>
 </html>

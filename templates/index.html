@@ -5,34 +5,101 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng ký đá bóng</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .schedule-card {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin: 12px 0;
+      background-color: #f9f9f9;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .schedule-card:hover {
+      transform: scale(1.01);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 6px 12px;
+      background-color: #2196F3;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 14px;
+      margin: 5px 4px 0 0;
+    }
+
+    .delete-btn {
+      background-color: #f44336;
+    }
+
+    .create-button {
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      margin-right: 8px;
+      font-size: 14px;
+    }
+
+    .logo-top-right {
+      position: absolute;
+      top: 24px;
+      right: 458px; /* Bạn có thể thay đổi giá trị này */
+      z-index: 1000;
+    }
+
+    .logo-img {
+      max-width: 100px; /* Tùy chỉnh kích thước logo */
+      height: auto;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 16px;
+    }
+  </style>
 </head>
 <body>
-<div class="logo-top-right">
-  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-img">
-</div>
-<div class="logo-top-right">
-  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-img">
-</div>
+  <div class="logo-top-right">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-img">
+  </div>
+
   <div class="container">
     <h1>Danh sách các ngày thi đấu</h1>
-    <a href="{{ url_for('create') }}" class="create-button">➕ Thêm buổi đá mới</a>
-<a href="{{ url_for('admin_players') }}" class="btn">👤 Quản lý thành viên</a>
+
+    {% if admin %}
+      <a href="{{ url_for('create') }}" class="create-button">➕ Thêm buổi đá mới</a>
+      <a href="{{ url_for('admin_players') }}" class="btn">👤 Quản lý thành viên</a>
+    {% endif %}
 
     {% if schedules %}
       {% for schedule in schedules %}
-<div class="schedule-card">
-  <h3>📅 {{ schedule.date }} – {{ schedule.time }}</h3>
-  <p>📍 {{ schedule.field }} – <a href="{{ schedule.map }}" target="_blank">Xem bản đồ</a></p>
+        <div class="schedule-card">
+          <h3>📅 {{ schedule.time }} | {{ format_date_with_weekday(schedule.date) }}</h3>
+          <p>📍 {{ schedule.field }} – <a href="{{ schedule.map }}" target="_blank">Xem bản đồ</a></p>
 
-  <a href="{{ url_for('register', date=schedule.id) }}" class="btn">📄 Xem & Đăng ký</a>
+          <a href="{{ url_for('register', date=schedule.id) }}" class="btn">📄 Xem & Đăng ký</a>
 
-  {% if admin %}
-    <!-- 🔴 Nút xóa chỉ hiện nếu là admin -->
-    <form method="POST" action="{{ url_for('delete_schedule', date=schedule.id) }}?admin=1" onsubmit="return confirm('Bạn có chắc muốn xoá buổi đá này không?')">
-      <button type="submit" class="btn delete-btn">🗑️ Xóa</button>
-    </form>
-  {% endif %}
-</div>
-{% endfor %}
-{% endif %}
+          {% if admin %}
+            <form method="POST" action="{{ url_for('delete_schedule', date=schedule.id) }}?admin=1" onsubmit="return confirm('Bạn có chắc muốn xoá buổi đá này không?')">
+              <button type="submit" class="btn delete-btn">🗑️ Xóa</button>
+            </form>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>Hiện chưa có buổi đá nào được tạo.</p>
+    {% endif %}
+  </div>
+</body>
 </html>
