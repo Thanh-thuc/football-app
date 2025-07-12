@@ -54,7 +54,8 @@
     .position-box.RB, .position-box.CB, .position-box.LB { background-color: #4CAF50; }
     .position-box.LM, .position-box.RM, .position-box.DM, .position-box.AM { background-color: #FFC107; }
     .position-box.ST, .position-box.CF, .position-box.SS, .position-box.LW, .position-box.RW { background-color: #F44336; }
-    #toggle-coach { margin: 5px 0; }
+    .position-box.BHL { background-color: #d2691e; } /* Màu cam đất */ 
+     #toggle-coach { margin: 5px 0; }
     a { margin-top: 10px; display: inline-block; font-size: 12px; }
     .container { position: relative; padding-top: 40px; }
 
@@ -173,70 +174,84 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      document.querySelectorAll(".auto-submit").forEach(el => {
-        el.addEventListener("change", () => document.getElementById("register-form").submit());
+  document.addEventListener("DOMContentLoaded", function () {
+    // ✅ Giữ vị trí cuộn khi reload
+    const savedScroll = localStorage.getItem('scrollPosition');
+    if (savedScroll) {
+      window.scrollTo(0, parseInt(savedScroll));
+      localStorage.removeItem('scrollPosition');
+    }
+
+    // ✅ Auto submit khi thay đổi trạng thái hoặc ghi chú/lý do
+    document.querySelectorAll(".auto-submit").forEach(el => {
+      el.addEventListener("change", () => {
+        localStorage.setItem('scrollPosition', window.scrollY);  // lưu vị trí
+        document.getElementById("register-form").submit();       // submit form
       });
-
-      const box = document.getElementById("deadline-box");
-      const countdownEl = document.getElementById("countdown");
-      const infoEl = document.getElementById("deadline-info");
-      const lockedAt = {{ locked_at_global }};
-      if (!lockedAt || isNaN(lockedAt)) {
-        countdownEl.textContent = "⚠️ Lỗi: Thời hạn không hợp lệ";
-        return;
-      }
-      const now = {{ now }};
-      let remaining = lockedAt - now;
-
-      function formatTime(sec) {
-        const days = Math.floor(sec / 86400);
-        const hours = Math.floor((sec % 86400) / 3600);
-        const minutes = Math.floor((sec % 3600) / 60);
-        const seconds = Math.floor(sec % 60);
-        const parts = [];
-        if (days > 0) parts.push(`${days} ngày`);
-        if (hours > 0 || days > 0) parts.push(`${hours} giờ`);
-        parts.push(`${minutes} phút`);
-        parts.push(`${seconds} giây`);
-        return parts.join(" ");
-      }
-
-      function formatDeadline(ts) {
-        return new Date(ts * 1000).toLocaleString('vi-VN', {
-          weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric',
-          hour: '2-digit', minute: '2-digit'
-        });
-      }
-
-      function updateCountdown() {
-        const deadlineStr = formatDeadline(lockedAt);
-        if (remaining > 0) {
-          countdownEl.textContent = `⏳ Còn lại: ${formatTime(remaining)}`;
-          countdownEl.style.color = remaining < 300 ? 'red' : '#000';
-          infoEl.innerHTML = `⏰ Hạn chót đăng ký: <b>${deadlineStr}</b>`;
-          remaining--;
-        } else {
-          countdownEl.textContent = "🔒 Đã hết hạn đăng ký";
-          infoEl.innerHTML = `🔒 Hạn chót đăng ký: <b>${deadlineStr}</b><br>Vui lòng liên hệ admin để thay đổi trạng thái.`;
-          box.style.backgroundColor = "#ffcdd2";
-          countdownEl.style.color = "darkred";
-        }
-      }
-
-      updateCountdown();
-      setInterval(updateCountdown, 1000);
-
-      function countJoins() {
-        let total = 0;
-        document.querySelectorAll("select").forEach(el => {
-          if (el.value === "join") total++;
-        });
-        document.getElementById("total-join").innerText = total;
-      }
-      countJoins();
     });
-  </script>
+
+    // ⏳ Đếm ngược hạn chót
+    const box = document.getElementById("deadline-box");
+    const countdownEl = document.getElementById("countdown");
+    const infoEl = document.getElementById("deadline-info");
+    const lockedAt = Number({{ locked_at_global | tojson }});  // ✅ Truyền đúng kiểu
+    const now = Number({{ now | tojson }});
+    if (!lockedAt || isNaN(lockedAt) || !now || isNaN(now)) {
+      countdownEl.textContent = "⚠️ Lỗi: Thời hạn không hợp lệ";
+      return;
+    }
+
+    let remaining = lockedAt - now;
+
+    function formatTime(sec) {
+      const days = Math.floor(sec / 86400);
+      const hours = Math.floor((sec % 86400) / 3600);
+      const minutes = Math.floor((sec % 3600) / 60);
+      const seconds = Math.floor(sec % 60);
+      const parts = [];
+      if (days > 0) parts.push(`${days} ngày`);
+      if (hours > 0 || days > 0) parts.push(`${hours} giờ`);
+      parts.push(`${minutes} phút`);
+      parts.push(`${seconds} giây`);
+      return parts.join(" ");
+    }
+
+    function formatDeadline(ts) {
+      return new Date(ts * 1000).toLocaleString('vi-VN', {
+        weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    function updateCountdown() {
+      const deadlineStr = formatDeadline(lockedAt);
+      if (remaining > 0) {
+        countdownEl.textContent = `⏳ Còn lại: ${formatTime(remaining)}`;
+        countdownEl.style.color = remaining < 300 ? 'red' : '#000';
+        infoEl.innerHTML = `⏰ Hạn chót đăng ký: <b>${deadlineStr}</b>`;
+        remaining--;
+      } else {
+        countdownEl.textContent = "🔒 Đã hết hạn đăng ký";
+        infoEl.innerHTML = `🔒 Hạn chót đăng ký: <b>${deadlineStr}</b><br>Vui lòng liên hệ admin để thay đổi trạng thái.`;
+        box.style.backgroundColor = "#ffcdd2";
+        countdownEl.style.color = "darkred";
+      }
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // ✅ Tính tổng người tham gia
+    function countJoins() {
+      let total = 0;
+      document.querySelectorAll("select").forEach(el => {
+        if (el.value === "join") total++;
+      });
+      document.getElementById("total-join").innerText = total;
+    }
+    countJoins();
+  });
+</script>
 
   <!-- ✅ Thêm thư viện html2pdf và hàm export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>

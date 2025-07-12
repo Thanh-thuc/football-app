@@ -55,7 +55,18 @@ def get_players_for_schedule(date):
 def index():
     data = load_data()
     admin_mode = request.args.get("admin") == "1"
-    return render_template("index.html", schedules=data["schedules"], admin=admin_mode)
+
+    # 👉 Sắp xếp buổi đá theo thời gian mới nhất trước
+    sorted_schedules = sorted(
+        data["schedules"],
+        key=lambda s: datetime.strptime(f"{s['date']} {s['time']}", "%Y-%m-%d %H:%M"),
+        reverse=True
+    )
+
+    # 👉 Đánh dấu buổi đá mới nhất
+    newest_id = sorted_schedules[0]["id"] if sorted_schedules else None
+
+    return render_template("index.html", schedules=sorted_schedules, admin=admin_mode, newest_id=newest_id)
 
 @app.route("/register/<date>", methods=["GET", "POST"])
 def register(date):
@@ -164,23 +175,23 @@ def add_player_to_session(date, player_id):
 def create():
     data = load_data()
     if request.method == "POST":
-        date = request.form["date"]
-        time_ = request.form["time"]
-        field = request.form["field"]
-        map_link = request.form["map"]
-        # Chuyển đổi định dạng ngày giờ từ ISO 8601 sang timestamp
-        # Thêm múi giờ (ví dụ: +07:00 cho Việt Nam) hoặc để UTC tùy theo nhu cầu
-        locked_at_str = request.form["locked_at"]
+        date = request.form.get("date")
+        time_ = request.form.get("time")
+        field = request.form.get("location")       # ✅ khớp name="location"
+        map_link = request.form.get("map_link")    # ✅ khớp name="map_link"
+        locked_at_str = request.form.get("locked_at")
+
         locked_at = int(datetime.fromisoformat(locked_at_str).timestamp())
 
-        status = {}
-        for player in data["players"]:
-            status[str(player["id"])] = {
+        status = {
+            str(player["id"]): {
                 "state": "",
                 "note": "",
                 "reason": "",
                 "locked_at": 0
-            }
+            } for player in data["players"]
+        }
+
         data["schedules"].append({
             "id": date,
             "date": date,
@@ -190,8 +201,10 @@ def create():
             "locked_at": locked_at,
             "status": status
         })
+
         save_data(data)
         return redirect(url_for("index"))
+
     return render_template("create.html")
 
 @app.route("/admin/players", methods=["GET", "POST"])

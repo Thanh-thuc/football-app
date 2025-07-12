@@ -24,14 +24,14 @@
     {
       "id": 8,
       "name": "CÔNG VĂN",
-      "position": "",
+      "position": "BHL",
       "number": 2,
       "order": 4
     },
     {
       "id": 7,
       "name": "QUỐC HOÀ",
-      "position": "",
+      "position": "BHL",
       "number": 66,
       "order": 5
     },
@@ -181,6 +181,13 @@
       "position": "GK",
       "number": 23,
       "order": 30
+    },
+    {
+      "id": 29,
+      "name": "PHÚC LÊ",
+      "position": "CB",
+      "number": 62,
+      "order": 6
     }
   ],
   "schedules": [
@@ -347,6 +354,184 @@
           "note": "",
           "reason": "",
           "locked_at": 1752204048.8985825
+        },
+        "29": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        }
+      }
+    },
+    {
+      "id": "2025-07-27",
+      "date": "2025-07-27",
+      "time": "21:01",
+      "field": "Sân Thống Nhất",
+      "map": "https://goo.gl/maps/xyz...",
+      "locked_at": 1752912060,
+      "status": {
+        "4": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "5": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "6": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "8": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "7": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "9": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "10": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "11": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "12": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "13": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "14": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "15": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "16": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "17": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "3": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "18": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "19": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "20": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "23": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "21": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "22": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "24": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "25": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "26": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "27": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
+        },
+        "28": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 1752310295.860114
+        },
+        "29": {
+          "state": "",
+          "note": "",
+          "reason": "",
+          "locked_at": 0
         }
       }
     }

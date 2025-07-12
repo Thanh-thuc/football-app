@@ -6,6 +6,41 @@
   <title>Đăng ký đá bóng</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
+    .newest {
+      background: linear-gradient(90deg, #ff8aaf, #d28eff, #ff8aaf);
+      background-size: 300% 100%;
+      animation: gradientSlide 2.5s ease-in-out forwards;
+      border: 2px solid #d63384;
+      font-weight: bold;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .newest::before {
+  content: "🔥 Mới nhất";
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: #d63384;
+  color: white;
+  padding: 3px 8px;
+  font-size: 12px;
+  border-radius: 5px;
+  font-weight: bold;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+    @keyframes gradientSlide {
+      0% {
+        background-position: 200% 0;
+      }
+      100% {
+        background-position: 0% 0;
+        background: #fceff9; /* Nền hồng nhạt cố định sau hiệu ứng */
+      }
+    }
+
     .schedule-card {
       border: 1px solid #ccc;
       border-radius: 10px;
@@ -48,13 +83,13 @@
 
     .logo-top-right {
       position: absolute;
-      top: 24px;
-      right: 458px; /* Bạn có thể thay đổi giá trị này */
+      top: 20px;
+      right: 458px;
       z-index: 1000;
     }
 
     .logo-img {
-      max-width: 100px; /* Tùy chỉnh kích thước logo */
+      max-width: 100px;
       height: auto;
     }
 
@@ -67,6 +102,16 @@
     h1 {
       margin-bottom: 16px;
     }
+@keyframes subtleShake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(1deg); }
+  50% { transform: rotate(-1deg); }
+  75% { transform: rotate(1deg); }
+}
+
+.newest::before {
+  animation: subtleShake 2s infinite ease-in-out;
+}
   </style>
 </head>
 <body>
@@ -84,7 +129,7 @@
 
     {% if schedules %}
       {% for schedule in schedules %}
-        <div class="schedule-card">
+        <div class="schedule-card {% if schedule.id == newest_id %}newest{% endif %}">
           <h3>📅 {{ schedule.time }} | {{ format_date_with_weekday(schedule.date) }}</h3>
           <p>📍 {{ schedule.field }} – <a href="{{ schedule.map }}" target="_blank">Xem bản đồ</a></p>
 
