@@ -82,11 +82,18 @@
     }
 
     .logo-top-right {
-      position: absolute;
-      top: 20px;
-      right: 458px;
-      z-index: 1000;
-    }
+  position: absolute;
+  top: 24px;
+  right: 27%;
+  z-index: 1000;
+}
+
+@media (max-width: 768px) {
+  .logo-top-right {
+    top: 10px;
+    right: 10px;
+  }
+}
 
     .logo-img {
       max-width: 100px;
@@ -131,7 +138,7 @@
       {% for schedule in schedules %}
         <div class="schedule-card {% if schedule.id == newest_id %}newest{% endif %}">
           <h3>📅 {{ schedule.time }} | {{ format_date_with_weekday(schedule.date) }}</h3>
-          <p>📍 {{ schedule.field }} – <a href="{{ schedule.map }}" target="_blank">Xem bản đồ</a></p>
+          <p>🏟️ {{ schedule.field }} – <a href="{{ schedule.map }}" target="_blank">Xem bản đồ</a></p>
 
           <a href="{{ url_for('register', date=schedule.id) }}" class="btn">📄 Xem & Đăng ký</a>
 

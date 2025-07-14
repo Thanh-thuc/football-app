@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import json, os, time
 from datetime import datetime
+import pytz
 
 app = Flask(__name__)
 LOCK_DURATION = 60  # giây
@@ -78,10 +79,21 @@ def register(date):
     players = sorted(data["players"], key=lambda p: p["order"])
     statuses = schedule["status"]
     admin_mode = request.args.get("admin") == "1"
+    vn_tz = pytz.timezone("Asia/Ho_Chi_Minh")
     now = time.time()
-    locked_at_global = schedule.get("locked_at", 0)
-    is_locked = not admin_mode and now > locked_at_global
 
+    locked_at_ts = schedule.get("locked_at", 0)
+
+    # Nếu có locked_at thì chuyển sang datetime có timezone
+    if locked_at_ts:
+        locked_at_utc = datetime.utcfromtimestamp(locked_at_ts).replace(tzinfo=pytz.utc)
+        locked_at_vn = locked_at_utc.astimezone(vn_tz)
+        locked_at_global = int(locked_at_vn.timestamp())
+    else:
+        locked_at_global = 0
+    
+    is_locked = not admin_mode and now > locked_at_global
+         
     if request.method == "POST":
         for player in players:
             pid = str(player["id"])
@@ -99,8 +111,14 @@ def register(date):
             reason = request.form.get(f"reason_{pid}", current.get("reason", ""))
 
             # Nếu trạng thái thay đổi và chưa từng bị khóa, cập nhật locked_at
-            if not admin_mode and not lock_time and state in ["join", "busy"]:
-                lock_time = now  # đánh dấu thời gian khóa
+            if not admin_mode:
+                if state in ["join", "busy"]:
+                    # Nếu trước đó chưa bị khoá thì bắt đầu tính thời gian
+                    if not lock_time:
+                        lock_time = now
+                elif state == "":
+                    # Nếu chọn lại thành "chưa chọn", reset thời gian khoá
+                    lock_time = 0
 
             statuses[pid] = {
                 "state": state,
@@ -112,7 +130,11 @@ def register(date):
         save_data(data)
         return redirect(url_for("register", date=date) + ("?admin=1" if admin_mode else ""))
 
-    locked_datetime_str = datetime.fromtimestamp(locked_at_global).strftime("%Y-%m-%d %H:%M") if locked_at_global else "Chưa đặt"
+    if locked_at_global:
+        locked_at_dt = datetime.fromtimestamp(locked_at_global).astimezone(vn_tz)
+        locked_datetime_str = locked_at_dt.strftime("%Y-%m-%d %H:%M")
+    else:
+        locked_datetime_str = "Chưa đặt"
     return render_template(
         "register.html",
         players=players,
@@ -181,7 +203,11 @@ def create():
         map_link = request.form.get("map_link")    # ✅ khớp name="map_link"
         locked_at_str = request.form.get("locked_at")
 
-        locked_at = int(datetime.fromisoformat(locked_at_str).timestamp())
+        vn_tz = pytz.timezone("Asia/Ho_Chi_Minh")
+        locked_at_naive = datetime.fromisoformat(locked_at_str)
+        locked_at_local = vn_tz.localize(locked_at_naive)
+        locked_at = int(locked_at_local.astimezone(pytz.utc).timestamp())  # lưu UTC
+
 
         status = {
             str(player["id"]): {

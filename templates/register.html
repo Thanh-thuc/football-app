@@ -5,7 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng ký buổi đá</title>
   <style>
-    .logo-top-right { position: absolute; top: 10px; right: 450px; }
+textarea {
+  width: 100%;
+  padding: 4px;
+  font-size: 12px;
+  box-sizing: border-box;
+  resize: none;
+  min-height: 30px;
+}
+@media (max-width: 768px) {
+  textarea {
+    font-size: 10px;
+    padding: 2px;
+    min-height: 24px;
+  }
+}
+    .logo-top-right {
+  position: absolute;
+  top: 16px;
+  right: 26%;
+  z-index: 1000;
+}
+
+.logo-img {
+  max-width: 100px;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .logo-top-right {
+    top: 10px;
+    right: 10px;
+  }
+
+  .logo-img {
+    max-width: 60px;
+  }
+}
     .logo-img { max-width: 150px; height: auto; }
     .locked { background-color: #f0f0f0; color: #888; }
     .late { background-color: #fff3e0 !important; }
@@ -146,8 +182,12 @@
                   <option value="busy" {% if pstatus.state == "busy" %}selected{% endif %}>❌ Bận</option>
                 </select>
               </td>
-              <td><input type="text" name="reason_{{ pid }}" value="{{ pstatus.reason }}" class="auto-submit {% if locked or is_locked %}disabled{% endif %}" {% if locked or is_locked %}readonly{% endif %}></td>
-              <td><input type="text" name="note_{{ pid }}" value="{% if is_late %}Trễ hạn đăng ký{% else %}{{ pstatus.note }}{% endif %}" class="auto-submit {% if locked or is_locked %}disabled{% endif %}" {% if locked or is_locked %}readonly{% endif %}></td>
+              <td>
+  <textarea name="reason_{{ pid }}" rows="1" oninput="autoResize(this)" class="auto-submit {% if locked or is_locked %}disabled{% endif %}" {% if locked or is_locked %}readonly{% endif %}>{{ pstatus.reason }}</textarea>
+</td>
+<td>
+  <textarea name="note_{{ pid }}" rows="1" oninput="autoResize(this)" class="auto-submit {% if locked or is_locked %}disabled{% endif %}" {% if locked or is_locked %}readonly{% endif %}>{% if is_late %}Trễ hạn đăng ký{% else %}{{ pstatus.note }}{% endif %}</textarea>
+</td>
               {% if admin %}
               <td>
                 <form id="remove-form-{{ pid }}" method="POST" action="{{ url_for('remove_player_from_session', date=schedule.id, player_id=player.id) }}?admin=1"></form>
@@ -267,6 +307,11 @@
       };
       html2pdf().set(opt).from(element).save();
     }
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = (el.scrollHeight) + 'px';
+}
+document.querySelectorAll("textarea").forEach(autoResize);
   </script>
 </body>
 </html>
