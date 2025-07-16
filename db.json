@@ -65,7 +65,7 @@
     },
     {
       "id": 13,
-      "name": "NGỌC SƠN",
+      "name": "NGỌC SƠN ⓥ",
       "position": "CB",
       "number": 11,
       "order": 11
@@ -177,14 +177,14 @@
     },
     {
       "id": 28,
-      "name": "HOÀNG PHƯƠNG",
+      "name": "HOÀNG PHƯƠNG ⓥ",
       "position": "GK",
       "number": 23,
       "order": 28
     },
     {
       "id": 29,
-      "name": "PHÚC LÊ",
+      "name": "PHÚC LÊ ⓒ",
       "position": "CB",
       "number": 62,
       "order": 6
@@ -369,7 +369,7 @@
           "locked_at": 0
         },
         "30": {
-          "state": "",
+          "state": "join",
           "note": "",
           "reason": "",
           "locked_at": 0
@@ -421,10 +421,10 @@
           "locked_at": 0
         },
         "10": {
-          "state": "",
+          "state": "join",
           "note": "",
           "reason": "",
-          "locked_at": 0
+          "locked_at": 1752656287.1317005
         },
         "11": {
           "state": "",
@@ -439,10 +439,10 @@
           "locked_at": 0
         },
         "13": {
-          "state": "",
+          "state": "join",
           "note": "",
           "reason": "",
-          "locked_at": 0
+          "locked_at": 1752656296.7074356
         },
         "14": {
           "state": "",
@@ -463,10 +463,10 @@
           "locked_at": 0
         },
         "17": {
-          "state": "",
+          "state": "join",
           "note": "",
           "reason": "",
-          "locked_at": 0
+          "locked_at": 1752656305.6597326
         },
         "3": {
           "state": "join",
@@ -475,10 +475,10 @@
           "locked_at": 1752466494.8925335
         },
         "18": {
-          "state": "",
+          "state": "join",
           "note": "",
           "reason": "",
-          "locked_at": 0
+          "locked_at": 1752656307.1946602
         },
         "19": {
           "state": "join",
@@ -487,28 +487,28 @@
           "locked_at": 1752466516.0045578
         },
         "20": {
-          "state": "",
+          "state": "join",
           "note": "",
           "reason": "",
-          "locked_at": 0
+          "locked_at": 1752656308.730118
         },
         "23": {
-          "state": "",
+          "state": "join",
           "note": "",
           "reason": "",
-          "locked_at": 0
+          "locked_at": 1752656309.730856
         },
         "21": {
-          "state": "",
+          "state": "join",
           "note": "",
           "reason": "",
-          "locked_at": 0
+          "locked_at": 1752656322.386785
         },
         "22": {
-          "state": "",
+          "state": "join",
           "note": "",
           "reason": "",
-          "locked_at": 0
+          "locked_at": 1752656323.3621955
         },
         "24": {
           "state": "join",
@@ -517,10 +517,10 @@
           "locked_at": 1752466518.196027
         },
         "25": {
-          "state": "",
+          "state": "join",
           "note": "",
           "reason": "",
-          "locked_at": 0
+          "locked_at": 1752656325.2593536
         },
         "26": {
           "state": "",

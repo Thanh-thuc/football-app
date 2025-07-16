@@ -6,6 +6,17 @@ import pytz
 app = Flask(__name__)
 LOCK_DURATION = 60  # giây
 DB_FILE = "db.json"
+ANNOUNCE_FILE = 'data/announcements.json'
+
+def load_announcements():
+    if os.path.exists(ANNOUNCE_FILE):
+        with open(ANNOUNCE_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return []
+
+def save_announcements(data):
+    with open(ANNOUNCE_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
 # Kiểm tra và tạo db.json nếu chưa tồn tại
 if not os.path.exists(DB_FILE):
@@ -57,18 +68,31 @@ def index():
     data = load_data()
     admin_mode = request.args.get("admin") == "1"
 
-    # 👉 Sắp xếp buổi đá theo thời gian mới nhất trước
     sorted_schedules = sorted(
         data["schedules"],
         key=lambda s: datetime.strptime(f"{s['date']} {s['time']}", "%Y-%m-%d %H:%M"),
         reverse=True
     )
-
-    # 👉 Đánh dấu buổi đá mới nhất
     newest_id = sorted_schedules[0]["id"] if sorted_schedules else None
 
-    return render_template("index.html", schedules=sorted_schedules, admin=admin_mode, newest_id=newest_id)
+    # ✅ THÊM: Load thông báo nổi bật
+    announcements = load_announcements()
+    banner_announcement = next((a for a in announcements if a.get("is_banner")), None)
 
+    banner_announcement = None
+    all_announcements = load_announcements()
+    for ann in all_announcements:
+        if ann.get("is_banner"):
+            banner_announcement = ann
+            break
+
+    return render_template(
+        "index.html",
+        schedules=sorted_schedules,
+        admin=admin_mode,
+        newest_id=newest_id,
+        banner_announcement=banner_announcement
+    )
 @app.route("/register/<date>", methods=["GET", "POST"])
 def register(date):
     data = load_data()
@@ -353,5 +377,51 @@ def inject_helpers():
             return date_str
 
     return dict(get_line_color=get_line_color, format_date_with_weekday=format_date_with_weekday)
+@app.route("/about.html")
+def about():
+    return render_template("about.html")
+@app.route('/announcements')
+def announcements():
+    announcements = load_announcements()
+    is_admin = request.args.get('admin') == '1'
+    return render_template('announcements.html', announcements=announcements, is_admin=is_admin)
+@app.route('/add_announcement', methods=['POST'])
+def add_announcement():
+    if request.args.get('admin') != '1':
+        return "Không có quyền", 403
+
+    announcements = load_announcements()
+    new_item = {
+        "title": request.form['title'],
+        "content": request.form['content'],
+        "date": datetime.now().strftime("%d/%m/%Y"),
+        "is_banner": 'is_banner' in request.form
+    }
+    announcements.insert(0, new_item)
+    save_announcements(announcements)
+    return redirect(url_for('announcements', admin=1))
+
+@app.route('/delete_announcement/<int:index>', methods=['POST'])
+def delete_announcement(index):
+    if request.args.get('admin') != '1':
+        return "Không có quyền", 403
+
+    announcements = load_announcements()
+    if 0 <= index < len(announcements):
+        del announcements[index]
+        save_announcements(announcements)
+    return redirect(url_for('announcements', admin=1))
+@app.route('/toggle_banner/<int:index>', methods=['POST'])
+def toggle_banner(index):
+    if request.args.get('admin') != '1':
+        return "Không có quyền", 403
+
+    announcements = load_announcements()
+    if 0 <= index < len(announcements):
+        # Đảo trạng thái ghim nổi
+        announcements[index]['is_banner'] = not announcements[index].get('is_banner', False)
+        save_announcements(announcements)
+
+    return redirect(url_for('announcements', admin=1))
 if __name__ == "__main__":
     app.run(debug=True)

@@ -6,6 +6,62 @@
   <title>Đăng ký đá bóng</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
+#floating-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  background-color: transparent; /* hoàn toàn trong suốt */
+  pointer-events: none; /* không chặn thao tác người dùng */
+}
+
+#floating-banner .banner-content {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: scrollText 12s linear infinite;
+  font-size: 16px;
+  font-weight: bold;
+  color: #ff5722;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes scrollText {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.floating-icon {
+  margin-right: 10px;
+}
+
+@keyframes shake {
+  0% { transform: translate(0px, 0px); }
+  25% { transform: translate(2px, 1px); }
+  50% { transform: translate(-2px, -1px); }
+  75% { transform: translate(2px, -1px); }
+  100% { transform: translate(0px, 0px); }
+}
+  .btn-about {
+    display: inline-block;
+    padding: 10px 16px;
+    background-color: #c62828;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 10px 0;
+    transition: background 0.3s;
+  }
+
+  .btn-about:hover {
+    background-color: #b71c1c;
+  }
     .newest {
       background: linear-gradient(90deg, #ff8aaf, #d28eff, #ff8aaf);
       background-size: 300% 100%;
@@ -84,7 +140,7 @@
     .logo-top-right {
   position: absolute;
   top: 24px;
-  right: 27%;
+  right: 30%;
   z-index: 1000;
 }
 
@@ -122,6 +178,14 @@
   </style>
 </head>
 <body>
+{% if banner_announcement %}
+<div id="floating-banner">
+  <div class="banner-content">
+    <span class="floating-icon">📣</span>
+    {{ banner_announcement.title }} – {{ banner_announcement.content }}
+  </div>
+</div>
+{% endif %}
   <div class="logo-top-right">
     <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-img">
   </div>
@@ -133,7 +197,11 @@
       <a href="{{ url_for('create') }}" class="create-button">➕ Thêm buổi đá mới</a>
       <a href="{{ url_for('admin_players') }}" class="btn">👤 Quản lý thành viên</a>
     {% endif %}
-
+<div style="margin: 12px 0;">
+  <a href="{{ url_for('static', filename='about.html') }}" class="btn-about">📘 Giới thiệu & Nội quy</a>
+  <a href="#" onclick="alert('📢 Chức năng đang trong quá trình phát triển, quay lại sau nhé!')" class="btn-about">📸 Thư viện đội bóng</a>
+  <a href="{{ url_for('announcements') }}" class="btn-about">📣 Kênh thông báo</a> <!-- Đã đổi class -->
+</div>
     {% if schedules %}
       {% for schedule in schedules %}
         <div class="schedule-card {% if schedule.id == newest_id %}newest{% endif %}">

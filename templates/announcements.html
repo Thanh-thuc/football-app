@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Kênh thông báo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fefefe;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form.add-form {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    form.add-form input[type="text"],
+    form.add-form textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    form.add-form label {
+      font-weight: bold;
+    }
+
+    .announcement {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      background: #fffefc;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 6px 12px;
+      background-color: #1976d2;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+      margin: 4px 4px 0 0;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-danger {
+      background-color: #e53935;
+    }
+
+    .btn-warning {
+      background-color: #f57c00;
+    }
+
+    .btn-back {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      background-color: #555;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📣 Kênh thông báo</h2>
+
+    {% if is_admin %}
+    <form action="{{ url_for('add_announcement', admin=1) }}" method="POST" class="add-form">
+      <label for="title">Tiêu đề:</label>
+      <input type="text" id="title" name="title" required>
+
+      <label for="content">Nội dung:</label>
+      <textarea id="content" name="content" rows="3" required></textarea>
+
+      <button type="submit" class="btn">➕ Thêm thông báo</button>
+    </form>
+    {% endif %}
+
+    {% for item in announcements %}
+    <div class="announcement">
+      <h4>{{ item.title }}</h4>
+      <p>{{ item.content }}</p>
+      <small>🗓️ {{ item.date }}</small><br>
+
+      {% if is_admin %}
+        <form action="{{ url_for('toggle_banner', index=loop.index0) }}?admin=1" method="POST" style="display:inline;">
+          <button type="submit" class="btn btn-warning">
+            {% if item.is_banner %}❌ Bỏ ghim nổi{% else %}🔝 Ghim chạy nổi{% endif %}
+          </button>
+        </form>
+
+        <form action="{{ url_for('delete_announcement', index=loop.index0) }}?admin=1" method="POST" style="display:inline;">
+          <button type="submit" class="btn btn-danger">🗑️ Xóa</button>
+        </form>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    <a href="{{ url_for('index') }}?admin={{ 1 if is_admin else 0 }}" class="btn-back">← Quay lại trang chủ</a>
+  </div>
+</body>
+</html>

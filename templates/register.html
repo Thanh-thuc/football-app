@@ -20,29 +20,21 @@ textarea {
     min-height: 24px;
   }
 }
-    .logo-top-right {
-  position: absolute;
-  top: 16px;
-  right: 26%;
-  z-index: 1000;
+.watermark-logo {
+  position: fixed;
+  top: 50%;
+  left: 53.55%;
+  transform: translate(-50%, -50%);
+  opacity: 0.1; /* Mờ nhẹ, không gây rối */
+  z-index: 0;
+  pointer-events: none; /* Không làm ảnh hưởng tới thao tác người dùng */
 }
 
-.logo-img {
-  max-width: 100px;
+.watermark-logo img {
+  max-width: 1100px;
+  width: 500vw;
   height: auto;
 }
-
-@media (max-width: 768px) {
-  .logo-top-right {
-    top: 10px;
-    right: 10px;
-  }
-
-  .logo-img {
-    max-width: 60px;
-  }
-}
-    .logo-img { max-width: 150px; height: auto; }
     .locked { background-color: #f0f0f0; color: #888; }
     .late { background-color: #fff3e0 !important; }
     #deadline-box { background-color: #ffcc80; padding: 8px; margin: 10px 0; border-radius: 6px; font-weight: bold; text-align: center; color: #333; }
@@ -112,9 +104,9 @@ textarea {
   </style>
 </head>
 <body>
-  <div class="logo-top-right">
-    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-img">
-  </div>
+<div class="watermark-logo">
+  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo Watermark">
+</div>
   <div class="container">
     <div class="content-wrapper">
       <h1 style="font-size: 18px; margin: 5px 0;">Đăng ký buổi đá ngày {{ schedule.date }} – {{ schedule.time }}</h1>
