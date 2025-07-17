@@ -141,6 +141,7 @@
   </style>
 </head>
 <body>
+<input type="hidden" id="schedule_id" value="{{ schedule_id }}">
 
 <!-- ✅ Logo chìm giữa màn hình -->
 <div class="watermark-logo">
@@ -373,6 +374,43 @@ document.addEventListener("DOMContentLoaded", () => {
     language: { noResults: () => 'Không tìm thấy' }
   });
 });
+const scheduleId = document.getElementById("schedule_id").value;
+  const isAdmin = window.location.href.includes("admin=1");
+  const dropdowns = document.querySelectorAll(".player-select");
+
+  // 🚀 Tải đội hình khi mở trang
+  fetch(`/get_lineup/${scheduleId}`)
+    .then(res => res.json())
+    .then(data => {
+      if (!data) return;
+      dropdowns.forEach(select => {
+        const pos = select.getAttribute("data-position");
+        if (data[pos]) {
+          select.value = data[pos];
+          $(select).trigger("change"); // Nếu dùng Select2
+        }
+      });
+    });
+
+  // 💾 Lưu đội hình khi thay đổi
+  dropdowns.forEach(select => {
+    select.addEventListener("change", () => {
+      if (!isAdmin) return; // Chỉ admin mới được lưu
+
+      const lineup = {};
+      dropdowns.forEach(s => {
+        lineup[s.getAttribute("data-position")] = s.value;
+      });
+
+      fetch(`/save_lineup/${scheduleId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(lineup)
+      });
+    });
+  });
 </script>
 </body>
 </html>
