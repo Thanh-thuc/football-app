@@ -427,10 +427,10 @@
           "locked_at": 1752656287.1317005
         },
         "11": {
-          "state": "",
+          "state": "join",
           "note": "",
           "reason": "",
-          "locked_at": 0
+          "locked_at": 1752732477.397967
         },
         "12": {
           "state": "",
@@ -555,5 +555,6 @@
       }
     }
   ],
-  "sessions": {}
+  "sessions": {},
+  "lineups": {}
 }

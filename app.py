@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import json, os, time
 from datetime import datetime
 import pytz
@@ -423,5 +423,29 @@ def toggle_banner(index):
         save_announcements(announcements)
 
     return redirect(url_for('announcements', admin=1))
+# Route để lấy đội hình theo ngày thi đấu
+@app.route('/get_lineup/<schedule_id>')
+def get_lineup(schedule_id):
+    with open('db.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    lineup = data.get('lineups', {}).get(schedule_id, {})
+    return jsonify(lineup)
+
+# Route để lưu đội hình
+@app.route('/save_lineup/<schedule_id>', methods=['POST'])
+def save_lineup(schedule_id):
+    lineup_data = request.json
+    with open('db.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    if 'lineups' not in data:
+        data['lineups'] = {}
+
+    data['lineups'][schedule_id] = lineup_data
+
+    with open('db.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+    return jsonify({'status': 'ok'})
 if __name__ == "__main__":
     app.run(debug=True)
